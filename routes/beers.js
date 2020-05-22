@@ -57,20 +57,22 @@ router.delete("/:id(\\d+)",
         res.json({msg: "The beer is no longer available 😞!",deletedBeer});
 }));
 
-router.get("/search", asyncHandler(async (req,res)=>{
+router.post("/search", asyncHandler(async (req,res)=>{
     const query = req.body.query;
     console.log(req.body)
     try{
-        const results = await db.Beer.findAll(
+        let results = await db.Beer.findAll(
             {
           where: {
             name: {
               [Op.iLike]: `%${query}%`,
             },
           },
+          include: [db.Brewery, db.BeerType]
         }
         );
-        res.json({ results, wassup: "wassup" });
+        console.log(results)
+        res.json({results});
     } catch(err){
         console.log(err)
     }
