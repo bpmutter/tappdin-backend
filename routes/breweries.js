@@ -44,9 +44,18 @@ router.get("/:id(\\d+)", asyncHandler(async(req, res)=>{
             include: db.Brewery
         }]
     });
+    const beer = await db.Beer.findAll({
+        where: {
+            breweryId: breweryId
+        },
+        include: [{
+            model: db.Brewery
+        }]
+    });
     res.json({
         brewery,
-        checkins
+        checkins,
+        beer
     });
 }));
 
