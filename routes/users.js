@@ -49,7 +49,7 @@ router.post(
       { email, password, username, firstName, lastName },
       hashedPassword
     );
-    const user = await db.User.create({
+    const user = await db.User.build({
       email,
       hashedPassword,
       username,
@@ -58,6 +58,10 @@ router.post(
       createdAt: new Date(),
       updatedAt: new Date(),
     });
+    const validatorErrors = validationResult(req)
+    console.log(validatorErrors);
+
+    await user.save();
 
     console.log("USER POSTED");
     const token = getUserToken(user);
@@ -164,7 +168,7 @@ router.put("/:id(\\d+)/password", requireAuth, asyncHandler(async (req, res) => 
 router.delete("/:id(\\d+)/delete", requireAuth, asyncHandler(async (req, res) => {
     const userId = parseInt(req.params.id, 10);
     try{
-        
+
         const { deletePassword, confirmDeletePassword } = req.body;
         if(deletePassword !== confirmDeletePassword){
             const success = false;
