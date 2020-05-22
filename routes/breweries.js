@@ -59,6 +59,27 @@ router.get("/:id(\\d+)", asyncHandler(async(req, res)=>{
     });
 }));
 
+router.post("/search", asyncHandler(async (req,res)=>{
+    const query = req.body.query;
+    try{
+        let results = await db.Brewery.findAll(
+            {
+          where: {
+            name: {
+              [Op.iLike]: `%${query}%`,
+            },
+          },
+          include: {model: db.Beer, include: db.Checkin}
+        }
+        );
+        res.json({results});
+    } catch(err){
+        console.log(err)
+    }
+    
+}));
+
+
 router.delete("/:id(\\d+)",
     asyncHandler(async (req, res) => {
         const breweryId = parseInt(req.params.id, 10);
@@ -68,6 +89,8 @@ router.delete("/:id(\\d+)",
 
         res.json({msg: "The brewery is no longer available 😞!",deletedBrewery});
 }));
+
+
 
 
 
