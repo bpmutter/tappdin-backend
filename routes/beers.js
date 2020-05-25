@@ -46,6 +46,15 @@ router.get("/:id(\\d+)", asyncHandler(async(req, res)=>{
         checkins
     });
 }));
+router.get("/brewery/:id(\\d+)", asyncHandler(async(req, res)=>{
+    const breweryId = parseInt(req.params.id,10);
+    const beers = await db.Beer.findAll({
+        where: {breweryId: breweryId}, 
+        include: [db.Brewery, db.BeerType]
+    });
+    res.json({ beers });
+}));
+
 
 router.delete("/:id(\\d+)",
     asyncHandler(async (req, res) => {
